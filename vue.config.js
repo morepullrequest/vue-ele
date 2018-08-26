@@ -32,5 +32,11 @@ module.exports = {
         });
       });
     }
+  },
+  chainWebpack: config => {
+    config.resolve.alias
+      .set("components", "/src/components")
+      .set("src", "/src")
+      .set("common", "/src/common");
   }
 };

@@ -1,6 +1,6 @@
 <template>
-    <div class="header">
-        我是header
+    <div>
+        ratings
     </div>
 </template>
 
@@ -8,6 +8,5 @@
 export default {};
 </script>
 
-<style lang="stylus">
-
+<style>
 </style>
