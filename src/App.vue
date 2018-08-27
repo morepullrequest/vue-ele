@@ -1,7 +1,7 @@
 <template>
   <div id="app">
 
-    <v-header></v-header>
+    <v-header v-bind:seller="seller"></v-header>
 
     <div class="tab border-1px">
       <div class="tab-item">
@@ -29,8 +29,13 @@
 </template>
 
 <script>
+// import Vue from "vue";
 import header from "./components/header/header.vue";
 import axios from "axios";
+
+// Vue.prototype.$axios = axios;
+
+const ERR_OK = 0;
 
 export default {
   data() {
@@ -38,6 +43,22 @@ export default {
       seller: {}
     };
   },
+  created() {
+    axios
+      .get("/api/seller")
+      .then(response => {
+        var res = response.data;
+        console.log(response);
+        if (res.errno === ERR_OK) {
+          this.seller = res.data;
+          console.log(this.seller);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  },
+  methods: {},
   components: {
     "v-header": header
   }
@@ -54,7 +75,7 @@ export default {
   font-family 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
-  text-align center
+  // text-align center
   color #2c3e50
 
   .tab
@@ -77,6 +98,7 @@ export default {
 
 #nav
   padding 30px
+  text-align center
   a
     font-weight bold
     color #2c3e50
