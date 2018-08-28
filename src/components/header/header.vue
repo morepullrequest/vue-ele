@@ -151,13 +151,14 @@ export default {
       }
 
       .support {
-        display flex
-        align-items center
+        display: flex;
+        align-items: center;
+
         .icon {
           display: inline-block;
           width: 12px;
           height: 12px;
-          margin-right: 4px;       
+          margin-right: 4px;
           background-size: 12px 12px;
           background-repeadt: no-repeat;
 
@@ -192,7 +193,7 @@ export default {
     .support-count {
       position: absolute;
       right: 12px;
-      bottom: 14px; /*21px;*/
+      bottom: 14px; /* 21px; */
       padding: 0 8px;
       height: 24px;
       line-height: 24px;
@@ -234,7 +235,6 @@ export default {
     }
 
     .bulletin-text {
-      vertical-align: top;
       margin: 0 4px;
       font-size: 10px;
     }
@@ -265,9 +265,10 @@ export default {
     height: 100%;
     width: 100%;
     overflow: auto;
-    //transition: all 0.5s;
+    // transition: all 0.5s;
     background: rgba(7, 17, 27, 0.8);
     background-filter: blur(10px);
+
     &.fade-enter-active, &.fade-live-active {
       transition: all 1s;
     }
