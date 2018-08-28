@@ -112,6 +112,7 @@ export default {
     position: relative;
     padding: 24px 12px 18px 24px;
     font-size: 0;
+    display: flex;
 
     .avatar {
       display: inline-block;
@@ -150,12 +151,13 @@ export default {
       }
 
       .support {
+        display flex
+        align-items center
         .icon {
           display: inline-block;
           width: 12px;
           height: 12px;
-          margin-right: 4px;
-          vertical-align: middle;
+          margin-right: 4px;       
           background-size: 12px 12px;
           background-repeadt: no-repeat;
 
@@ -183,7 +185,6 @@ export default {
         .text {
           font-size: 10px;
           line-height: 12px;
-          vertical-align: middle;
         }
       }
     }
@@ -191,7 +192,7 @@ export default {
     .support-count {
       position: absolute;
       right: 12px;
-      bottom: 14px;
+      bottom: 14px; /*21px;*/
       padding: 0 8px;
       height: 24px;
       line-height: 24px;
@@ -266,7 +267,7 @@ export default {
     overflow: auto;
     //transition: all 0.5s;
     background: rgba(7, 17, 27, 0.8);
-    blur: 10px;
+    background-filter: blur(10px);
     &.fade-enter-active, &.fade-live-active {
       transition: all 1s;
     }

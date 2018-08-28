@@ -22,11 +22,11 @@
 </template>
 
 <script>
-// import Vue from "vue";
+import Vue from "vue";
 import header from "./components/header/header.vue";
 import axios from "axios";
 
-// Vue.prototype.$axios = axios;
+Vue.prototype.$axios = axios;
 
 const ERR_OK = 0;
 
@@ -37,13 +37,13 @@ export default {
     };
   },
   created() {
-    axios
+    this.$axios
       .get("/api/seller")
       .then(response => {
         var res = response.data;
-        console.log(response);
         if (res.errno === ERR_OK) {
           this.seller = res.data;
+          console.log("get /api/seller");
           console.log(this.seller);
         }
       })
@@ -58,44 +58,38 @@ export default {
 };
 </script>
 
-
-
 <style lang="stylus">
-@import "./common/stylus/index.styl";
+@import './common/stylus/index.styl';
 
-
-#app
-  font-family 'Avenir', Helvetica, Arial, sans-serif
-  -webkit-font-smoothing antialiased
-  -moz-osx-font-smoothing grayscale
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   // text-align center
-  color #2c3e50
+  color: #2c3e50;
 
-  .tab
-    display: flex
-    width: 100%
-    height: 40px
-    line-height: 40px
+  .tab {
+    display: flex;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
     // border-bottom: 1px solid rgba(7, 17, 27, 0.1)
-    border-1px(rgba(7, 17, 27, 0.1))
+    border-1px(rgba(7, 17, 27, 0.1));
 
-    .tab-item
-      flex: 1
-      text-align: center
-      & > a
-        display: block
-        font-size: 14px
-        color: rgb(77, 85, 93)
-        &.active
-          color: rgb(240, 20, 20)
+    .tab-item {
+      flex: 1;
+      text-align: center;
 
-#nav
-  padding 30px
-  text-align center
-  a
-    font-weight bold
-    color #2c3e50
-    &.router-link-exact-active
-      color #42b983
+      & > a {
+        display: block;
+        font-size: 14px;
+        color: rgb(77, 85, 93);
 
+        &.active {
+          color: rgb(240, 20, 20);
+        }
+      }
+    }
+  }
+}
 </style>
