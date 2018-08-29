@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const app = express();
 var apiRoutes = express.Router();
 app.use("/api", apiRoutes);
@@ -35,8 +36,8 @@ module.exports = {
   },
   chainWebpack: config => {
     config.resolve.alias
-      .set("components", "/src/components")
-      .set("src", "/src")
-      .set("common", "/src/common");
+      .set("components", path.resolve(__dirname, "src/components"))
+      .set("src", path.resolve(__dirname, "src"))
+      .set("common", path.resolve(__dirname, "src/common"));
   }
 };

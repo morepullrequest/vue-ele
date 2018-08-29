@@ -3,7 +3,9 @@
 
         <div class="menu-wrapper" ref="menuWrapper">
           <ul>
-            <li v-for="(item, index) in goods" :key="index" class="menu-item" :class="{'current': currentIndex === index}">
+            <li v-for="(item, index) in goods" :key="index" 
+            class="menu-item" :class="{'current': currentIndex === index}" 
+            @click="selectMenu(index)">
               <span class="text border-1px">
                 <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
               </span>
@@ -30,17 +32,24 @@
                     <div class="price">
                       <span class="now">￥{{food.price}}</span>
                     </div>
+                    <div class="cartcontrol-wrapper">
+                      <cartcontrol :food="food"></cartcontrol>
+                    </div>
                   </div>
                 </li>
               </ul>
             </li>
           </ul>
         </div>
+
+        <shortcart v-show="seller" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shortcart>
     </div>
 </template>
 
 <script>
 import BScroll from "better-scroll";
+import shortcart from "components/shopcart/shopcart.vue";
+import cartcontrol from "components/cartcontrol/cartcontrol.vue";
 
 const ERROR_OK = 0;
 
@@ -65,9 +74,24 @@ export default {
         }
       }
       return 0;
+    },
+    selectFoods() {
+      let foods = [];
+      this.goods.forEach(good => {
+        good.foods.forEach(food => {
+          if (food.count) {
+            foods.push(food);
+          }
+        });
+      });
+      return foods;
     }
   },
-  created() {
+  components: {
+    shortcart,
+    cartcontrol
+  },
+  mounted() {
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
     this.$axios.get("/api/goods").then(response => {
       let res = response.data;
@@ -84,8 +108,12 @@ export default {
   },
   methods: {
     _initScroll() {
-      this.menuScoll = new BScroll(this.$refs.menuWrapper, {});
+      this.menuScoll = new BScroll(this.$refs.menuWrapper, {
+        taps: true,
+        click: true
+      });
       this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
+        click: true,
         probeType: 3
       });
       this.foodScroll.on("scroll", pos => {
@@ -93,6 +121,8 @@ export default {
         // console.log(this.scrollY);
         // console.log(this.listHeight);
       });
+      console.log(this.menuScoll);
+      console.log(this.foodScroll);
     },
     _calculateHeight() {
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(
@@ -105,6 +135,14 @@ export default {
         height += item.clientHeight;
         this.listHeight.push(height);
       }
+    },
+    selectMenu(index) {
+      let foodList = this.$refs.foodsWrapper.getElementsByClassName(
+        "food-list-hook"
+      );
+      let el = foodList[index];
+      this.foodScroll.scrollToElement(el, 300);
+      console.log(index);
     }
   }
 };
@@ -216,6 +254,7 @@ export default {
 
       .content {
         flex: 1;
+        position: relative;
 
         .name {
           margin: 2px 0 8px 0;
@@ -258,6 +297,12 @@ export default {
             font-weight: normal;
             text-decoration: line-through;
           }
+        }
+
+        .cartcontrol-wrapper {
+          position: absolute;
+          right: 0;
+          bottom: 0px;
         }
       }
     }
