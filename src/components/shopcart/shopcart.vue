@@ -14,6 +14,13 @@
             <div class="content-right">
                 <div class="pay" :class="payClass">{{payDesc}}</div>
             </div>
+
+        </div>
+        <div class="ball-container">
+            <transition-group name="drop">
+                <div v-for="(ball, index) in balls" v-show="ball.show" :key="index" class="ball">
+                </div>>
+            </transition-group>
         </div>
     </div>
 </template>
@@ -35,6 +42,24 @@ export default {
       type: Number,
       default: 0
     }
+  },
+  data() {
+    return {
+      balls: [
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        },
+        {
+          show: false
+        }
+      ]
+    };
   },
   computed: {
     totalPrice() {
@@ -68,6 +93,11 @@ export default {
         return "enough";
       }
     }
+  },
+  methods: {
+    drop(el) {
+      console.log(el);
+    }
   }
 };
 </script>
@@ -84,9 +114,8 @@ export default {
     .content {
         display: flex;
         background: #141d27;
-        color: rgba(255, 255, 255, 0.4);
+        color: rgba(255, 255, 255, 0.4); // align-items: center;
 
-        // align-items: center;
         .content-left {
             flex: 1;
             font-size: 0;
@@ -170,16 +199,14 @@ export default {
         .content-right {
             flex: 0 0 105px;
             width: 105px;
-            text-align: center;
+            text-align: center; // vertical-align middle
 
-            // vertical-align middle
             .pay {
                 font-size: 12px;
                 font-weight: 700;
                 line-height: 46px;
-                height: 46px;
+                height: 46px; // padding 0 8px;
 
-                // padding 0 8px;
                 &.not-enough {
                     background: rgb(43, 51, 59);
                 }
@@ -188,6 +215,23 @@ export default {
                     background: #00b43c;
                     color: white;
                 }
+            }
+        }
+    }
+
+    .ball-container {
+        .ball {
+            position: fixed;
+            left: 32px;
+            bottom: 32px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: rgb(0, 160, 220);
+            z-index: 200;
+
+            &.drop-enter-active {
+                transition: all 0.4s;
             }
         }
     }

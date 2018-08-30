@@ -7,7 +7,7 @@
         </transition>
         <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
 
-        <div class="cart-add icon-add_circle" @click="addCart"></div>
+        <div class="cart-add icon-add_circle" @click="addCart($event)"></div>
     </div>
 </template>
 
@@ -19,7 +19,7 @@ export default {
     food: Object
   },
   methods: {
-    addCart() {
+    addCart(event) {
       console.log("click");
       if (!this.food.count) {
         //this.food.count = 1;
@@ -27,6 +27,7 @@ export default {
       } else {
         this.food.count++;
       }
+      this.$emit("cart-add", event.target);
     },
     decreaseCart() {
       if (!this.food.count) {
@@ -68,9 +69,6 @@ export default {
         &.move-enter, &.move-leave-to {
             opacity: 0;
             transform: translate3D(24px, 0, 0) rotate(180deg);
-        }
-
-        .inner {
         }
     }
 
