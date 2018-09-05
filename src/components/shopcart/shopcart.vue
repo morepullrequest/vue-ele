@@ -2,7 +2,7 @@
   <div class="shopcart">
     <div class="content">
       <div class="content-left">
-        <div class="logo-wrapper">
+        <div class="logo-wrapper" @click="toggleList">
           <div class="logo" :class="{ highlight: totalCount > 0}">
             <i class="icon-shopping_cart" :class="{ highlight: totalCount > 0}"></i>
           </div>
@@ -12,27 +12,55 @@
         <div class="desc">另需配送费￥{{deliveryPrice}}元</div>
       </div>
       <div class="content-right">
-        <div class="pay" :class="payClass">{{payDesc}}</div>
+        <div class="pay" :class="payClass" @click="pay">{{payDesc}}</div>
       </div>
-
     </div>
+
     <div class="ball-container">
-      <transition-group 
-        name="drop" 
-        v-on:before-enter="beforeEnter"
-        v-on:after-enter="afterEnter"
-        v-on:enter="enter"
-      >
+      <transition-group name="drop" v-on:before-enter="beforeEnter" v-on:after-enter="afterEnter" v-on:enter="enter">
         <div v-for="(ball, index) in balls" v-show="ball.show" :key="index" :data-index="index" class="ball">
-          
+
           <div class="inner inner-hook"></div>
         </div>
       </transition-group>
     </div>
+
+    <transition name="show">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header border-1px">
+          <h1 class="title">购物车</h1>
+          <span class="empty" @click="empty">清空</span>
+        </div>
+
+        <div class="list-content" ref="listContent">
+          <ul>
+            <li class="food border-1px" v-for="(food, index) in selectFoods" :key="index">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>￥{{food.price*food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </transition>
+
+    <transition name="mask">
+      <div class="list-mask" v-show="listShow" @click="hideList"></div>
+    </transition>
   </div>
+
+
 </template>
 
 <script>
+import cartcontrol from "components/cartcontrol/cartcontrol.vue";
+import BScroll from "better-scroll";
+
 export default {
   props: {
     selectFoods: {
@@ -52,7 +80,8 @@ export default {
   },
   data() {
     return {
-      balls: []
+      balls: [],
+      listShow: false
     };
   },
   computed: {
@@ -85,6 +114,29 @@ export default {
         return "not-enough";
       } else {
         return "enough";
+      }
+    }
+  },
+  watch: {
+    /* eslint-disable no-unused-vars */
+    totalCount(newCount, oldCount) {
+      if (newCount == 0) {
+        this.listShow = false;
+      }
+    },
+    listShow(newShow, oldShow) {
+      if (newShow) {
+        this.$nextTick(() => {
+          if (!this.scroll) {
+            this.scroll = new BScroll(this.$refs.listContent, {
+              taps: true,
+              click: true,
+              mouseWheel: true
+            });
+          } else {
+            this.scroll.refresh();
+          }
+        });
       }
     }
   },
@@ -145,12 +197,38 @@ export default {
 
       ball.show = false;
       ball.el = null;
+    },
+    toggleList() {
+      if (!this.totalCount) {
+        this.listShow = false;
+      } else {
+        this.listShow = !this.listShow;
+      }
+    },
+    hideList() {
+      this.listShow = false;
+    },
+    empty() {
+      this.selectFoods.forEach(food => {
+        food.count = 0;
+      });
+    },
+    pay() {
+      if (this.totalPrice < this.minPrice) {
+        return;
+      }
+      window.alert(`支付${this.totalPrice}元`);
     }
+  },
+  components: {
+    cartcontrol
   }
 };
 </script>
 
 <style lang="stylus">
+@import '../../common/stylus/index.styl';
+
 .shopcart {
   position: fixed;
   left: 0;
@@ -276,8 +354,8 @@ export default {
       width: 16px;
       height: 16px;
       border-radius: 50%;
-      // background: blue;
 
+      // background: blue;
       .inner {
         width: 16px;
         height: 16px;
@@ -292,6 +370,104 @@ export default {
           transition: all 0.4s linear;
         }
       }
+    }
+  }
+
+  .shopcart-list {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    transform: translate3d(0, -100%, 0);
+
+    &.show-enter-active, &.show-leave-active {
+      transition: all 0.5s;
+    }
+
+    &.show-enter, &.show-leave-to {
+      transform: translate3d(0, 0, 0);
+    }
+
+    .list-header {
+      display: flex;
+      height: 40px;
+      padding: 0 18px;
+      background-color: #f3f5f7;
+      line-height: 40px;
+      justify-content: space-between;
+      border-1px(rgba(7, 17, 27, 0.1));
+
+      .title {
+        display: inline-block;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+        font-weight: 200;
+      }
+
+      .empty {
+        font-size: 12px;
+        color: rgb(0, 160, 220);
+      }
+    }
+
+    .list-content {
+      background: white;
+      max-height: 220px;
+      padding: 0 18px;
+      overflow: hidden;
+
+      .food {
+        display: flex;
+        align-items: center;
+        height: 48px;
+        line-height: 24px;
+        border-1px(rgba(7, 17, 27, 0.1));
+
+        &:last-child {
+          border-none();
+        }
+
+        .name {
+          font-size: 14px;
+          color: rgb(7, 17, 27);
+          flex: 1;
+        }
+
+        .price {
+          // display: inline-block;
+          margin-left: 14px;
+          margin-right: 12px;
+          font-size: 14px;
+          font-weight: 700;
+          color: rgb(240, 20, 20);
+        }
+
+        .cartcontrol-wrapper {
+          // display: inline-block;
+        }
+      }
+    }
+  }
+
+  .list-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    opacity: 1;
+    background: rgba(7, 17, 27, 0.6);
+    backdrop-filter: blur(10px);
+
+    &.mask-enter-active, &.mask-leave-active {
+      transition: all 0.5s;
+    }
+
+    &.mask-enter, &.mask-leave-to {
+      opacity: 0;
+      background: rgba(7, 17, 27, 0);
     }
   }
 }

@@ -121,9 +121,9 @@ export default {
       });
       this.foodScroll.on("scroll", pos => {
         this.scrollY = Math.abs(Math.ceil(pos.y));
-        console.log(`pos:${pos.y}`);
-        console.log(`scrollY: ${this.scrollY}`);
-        console.log(this.listHeight);
+        // console.log(`pos:${pos.y}`);
+        // console.log(`scrollY: ${this.scrollY}`);
+        // console.log(this.listHeight);
       });
       console.log(this.menuScoll);
       console.log(this.foodScroll);

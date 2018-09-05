@@ -267,7 +267,7 @@ export default {
     overflow: auto;
     // transition: all 0.5s;
     background: rgba(7, 17, 27, 0.8);
-    background-filter: blur(10px);
+    backdrop-filter: blur(10px);
 
     &.fade-enter-active, &.fade-live-active {
       transition: all 1s;
