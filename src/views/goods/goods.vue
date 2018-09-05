@@ -110,16 +110,20 @@ export default {
     _initScroll() {
       this.menuScoll = new BScroll(this.$refs.menuWrapper, {
         taps: true,
-        click: true
+        click: true,
+        mouseWheel: true
       });
       this.foodScroll = new BScroll(this.$refs.foodsWrapper, {
         click: true,
+        taps: true,
+        mouseWheel: true,
         probeType: 3
       });
       this.foodScroll.on("scroll", pos => {
-        this.scrollY = Math.abs(Math.round(pos.y));
-        // console.log(this.scrollY);
-        // console.log(this.listHeight);
+        this.scrollY = Math.abs(Math.ceil(pos.y));
+        console.log(`pos:${pos.y}`);
+        console.log(`scrollY: ${this.scrollY}`);
+        console.log(this.listHeight);
       });
       console.log(this.menuScoll);
       console.log(this.foodScroll);
@@ -128,13 +132,14 @@ export default {
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(
         "food-list-hook"
       );
-      let height = 0;
+      let height = -1;
       this.listHeight.push(height);
       for (let i = 0; i < foodList.length; i++) {
         let item = foodList[i];
         height += item.clientHeight;
         this.listHeight.push(height);
       }
+      this.listHeight[0] = 0;
     },
     selectMenu(index) {
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(

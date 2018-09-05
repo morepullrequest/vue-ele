@@ -107,12 +107,12 @@ export default {
     },
     beforeEnter(el) {
       let index = el.dataset.index;
-      console.log(`before:${index}`);
+      // console.log(`before:${index}`);
       let ball = this.balls[index];
       let rect = ball.el.getBoundingClientRect();
       let x = rect.left - 32;
       let y = -(window.innerHeight - rect.top - 22);
-      console.log(`x: ${x}, y: ${y}`);
+      // console.log(`x: ${x}, y: ${y}`);
       let inner = el.getElementsByClassName("inner-hook")[0];
 
       el.style.display = "";
@@ -141,7 +141,7 @@ export default {
     afterEnter(el) {
       let index = el.dataset.index;
       let ball = this.balls[index];
-      console.log(`after${index}`);
+      // console.log(`after${index}`);
 
       ball.show = false;
       ball.el = null;
@@ -282,7 +282,7 @@ export default {
         width: 16px;
         height: 16px;
         border-radius: 50%;
-        background: red;
+        background: rgb(0, 160, 220);
       }
 
       &.drop-enter-active {
