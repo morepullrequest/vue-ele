@@ -18,7 +18,7 @@
             <li v-for="(item, index) in goods" :key="index" class="food-list food-list-hook">
               <h1 class="title">{{item.name}}</h1>
               <ul>
-                <li v-for="(food, foodIndex) in item.foods" class="food-item border-1px" :key="foodIndex">
+                <li v-for="(food, foodIndex) in item.foods" class="food-item border-1px" :key="foodIndex" @click="selectFood(food, $event)">
                   <div class="icon">
                     <img width="57px" height="57px" :src="food.icon">
                   </div>
@@ -31,6 +31,7 @@
                     </div>
                     <div class="price">
                       <span class="now">￥{{food.price}}</span>
+                      <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                     </div>
                     <div class="cartcontrol-wrapper">
                       <cartcontrol :food="food" @cart-add="cartAdd"></cartcontrol>
@@ -40,7 +41,10 @@
               </ul>
             </li>
           </ul>
+          
         </div>
+
+        <food :food="curFood" ref="curFood" @cart-add="cartAdd"></food>
 
         <shortcart ref="shopcart" v-show="seller" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shortcart>
     </div>
@@ -50,7 +54,7 @@
 import BScroll from "better-scroll";
 import shortcart from "components/shopcart/shopcart.vue";
 import cartcontrol from "components/cartcontrol/cartcontrol.vue";
-
+import food from "components/food/food.vue";
 const ERROR_OK = 0;
 
 export default {
@@ -61,7 +65,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      curFood: {}
     };
   },
   computed: {
@@ -89,7 +94,8 @@ export default {
   },
   components: {
     shortcart,
-    cartcontrol
+    cartcontrol,
+    food
   },
   mounted() {
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
@@ -125,8 +131,8 @@ export default {
         // console.log(`scrollY: ${this.scrollY}`);
         // console.log(this.listHeight);
       });
-      console.log(this.menuScoll);
-      console.log(this.foodScroll);
+      // console.log(this.menuScoll);
+      // console.log(this.foodScroll);
     },
     _calculateHeight() {
       let foodList = this.$refs.foodsWrapper.getElementsByClassName(
@@ -147,16 +153,23 @@ export default {
       );
       let el = foodList[index];
       this.foodScroll.scrollToElement(el, 300);
-      console.log(index);
+      // console.log(index);
+    },
+    selectFood(food) {
+      this.curFood = food;
+      this.$refs.curFood.show();
+      // console.log("select food");
     },
     cartAdd(el) {
+      // console.log("goods-drop-ball");
+      // console.log(el);
       this.$refs.shopcart.drop(el);
     }
   }
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../../common/stylus/index.styl';
 
 .goods {

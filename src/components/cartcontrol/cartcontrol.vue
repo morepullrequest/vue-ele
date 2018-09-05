@@ -1,13 +1,13 @@
 <template>
     <div class="cartcontrol">
         <transition name="move">
-            <div class="cart-decrease" v-show="food.count > 0" @click="decreaseCart">
+            <div class="cart-decrease" v-show="food.count > 0" @click.stop.prevent="decreaseCart">
                 <i class="inner icon-remove_circle_outline"></i>
             </div>
         </transition>
         <div class="cart-count" v-show="food.count > 0">{{food.count}}</div>
 
-        <div class="cart-add icon-add_circle" @click="addCart($event)"></div>
+        <div class="cart-add icon-add_circle" @click.stop.prevent="addCart($event)"></div>
     </div>
 </template>
 
@@ -20,7 +20,10 @@ export default {
   },
   methods: {
     addCart(event) {
-      console.log("click");
+      if (!event._constructed) {
+        return;
+      }
+      // console.log("add-cart-click");
       if (!this.food.count) {
         //this.food.count = 1;
         Vue.set(this.food, "count", 1);
@@ -42,7 +45,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .cartcontrol {
     font-size: 0;
     display: flex;

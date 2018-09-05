@@ -143,6 +143,7 @@ export default {
   methods: {
     drop(el) {
       // console.log(el);
+      // console.log("shop cart drop ball");
       for (let i = 0; i < this.balls.length; i++) {
         let ball = this.balls[i];
         if (!ball.show) {
@@ -226,7 +227,7 @@ export default {
 };
 </script>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 @import '../../common/stylus/index.styl';
 
 .shopcart {
