@@ -62,7 +62,7 @@ export default {
             margin-right: 22px;
             background-size: 20px 20px;
 
-            &.last-child {
+            &:last-child {
                 margin-right: 0;
             }
 
@@ -84,10 +84,10 @@ export default {
         .star-item {
             width: 15px;
             height: 15px;
-            margin-right: 16px;
+            margin-right: 6px;
             background-size: 15px 15px;
 
-            &.last-child {
+            &:last-child {
                 margin-right: 0;
             }
 
@@ -112,7 +112,7 @@ export default {
             margin-right: 3px;
             background-size: 10px 10px;
 
-            &.last-child {
+            &:last-child {
                 margin-right: 0;
             }
 
