@@ -19,14 +19,48 @@
             <span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
           </div>
 
+          <div class="cartcontrol-wrapper">
+            <cartcontrol :food="food" @cart-add="emitCartAdd"></cartcontrol>
+          </div>
+          <transition name="fade">
+            <div class="buy" v-show="!food.count || food.count===0" @click.stop.prevent="addFirst($event)">加入购物车</div>
+          </transition>
         </div>
 
-        <div class="cartcontrol-wrapper">
-          <cartcontrol :food="food" @cart-add="emitCartAdd"></cartcontrol>
+        <split v-show="food.info"></split>
+
+        <div class="info" v-show="food.info">
+
+          <h1 class="title">商品介绍</h1>
+          <p class="text">
+            {{food.info}}
+          </p>
         </div>
-        <transition name="fade">
-          <div class="buy" v-show="!food.count || food.count===0" @click.stop.prevent="addFirst($event)">加入购物车</div>
-        </transition>
+
+        <split></split>
+
+        <div class="rating">
+          <h1 class="title">商品评价</h1>
+          <ratingselect :ratings="food.ratings" :desc="ratingDesc" v-model="selectedRating"></ratingselect>
+          <div class="rating-wrapper">
+            <ul v-show="food.ratings && food.ratings.length">
+              <li v-for="(rating, index) in food.ratings" :key="index" class="rating-item border-1px">
+                <div class="user">
+                  <span class="name">{{rating.username}}</span>
+                  <img class="avatar" width="12" height="12" :src="rating.avatar">
+                </div>
+                <div class="time">
+                  {{rating.rateTime}}
+                </div>
+                <p class="text">
+                  <span :class="{'icon-thumb_up': rating.rateType===0, 'icon-thumb_down': rating.rateType===1}"></span>
+                  {{rating.text}}
+                </p>
+              </li>
+            </ul>
+            <div class="no-rating" v-show="!food.ratings || !food.ratings.length">暂无评论</div>
+          </div>
+        </div>
       </div>
     </div>
   </transition>
@@ -35,13 +69,32 @@
 <script>
 import BScroll from "better-scroll";
 import cartcontrol from "components/cartcontrol/cartcontrol.vue";
+import split from "components/split/split.vue";
+import ratingselect from "components/ratingselect/ratingselect.vue";
+
+// eslint-disable-next-line
+const POSITIVE = 0;
+// eslint-disable-next-line
+const NEGATIVE = 1;
+// eslint-disable-next-line
+const ALL = 2;
+
 export default {
   props: {
     food: Object
   },
   data() {
     return {
-      showFlag: false
+      showFlag: false,
+      ratingDesc: {
+        all: "全部",
+        positive: "推荐",
+        negative: "吐槽"
+      },
+      selectedRating: {
+        selectType: ALL,
+        onlyContent: false
+      }
     };
   },
   methods: {
@@ -71,12 +124,16 @@ export default {
     }
   },
   components: {
-    cartcontrol
+    cartcontrol,
+    split,
+    ratingselect
   }
 };
 </script>
 
 <style lang="stylus" scoped>
+@import '../../common/stylus/index.styl';
+
 .food {
   position: fixed;
   left: 0;
@@ -84,7 +141,7 @@ export default {
   width: 100%;
   bottom: 46px;
   z-index: 30;
-  background-color: #f3f5f7;
+  background-color: white;
 
   &.move-enter-active, &.move-leave-active {
     transition: all 0.2s linear;
@@ -95,8 +152,6 @@ export default {
   }
 
   .food-content {
-    background-color: white;
-
     .image-header {
       position: relative;
       width: 100%;
@@ -126,6 +181,7 @@ export default {
     }
 
     .content {
+      position: relative;
       padding: 18px;
 
       .title {
@@ -167,34 +223,91 @@ export default {
           text-decoration: line-through;
         }
       }
-    }
 
-    .cartcontrol-wrapper {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-    }
-
-    .buy {
-      position: absolute;
-      right: 18px;
-      bottom: 18px;
-      z-index: 10;
-      height: 24px;
-      line-height: 24px;
-      padding: 0 12px;
-      box-sizing: border-box;
-      width: 74px;
-      font-size: 10px;
-      border-radius: 12px;
-      color: white;
-      background-color: rgb(0, 160, 220);
-
-      &.fade-enter-active, &.fade-leave-active {
-        transition: all 0.2s;
+      .cartcontrol-wrapper {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
       }
-      &.fade-enter, &.fade-leave-to{
-        opacity: 0;
+
+      .buy {
+        position: absolute;
+        right: 18px;
+        bottom: 18px;
+        z-index: 10;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 12px;
+        box-sizing: border-box;
+        width: 74px;
+        font-size: 10px;
+        border-radius: 12px;
+        color: white;
+        background-color: rgb(0, 160, 220);
+
+        &.fade-enter-active, &.fade-leave-active {
+          transition: all 0.2s;
+        }
+
+        &.fade-enter, &.fade-leave-to {
+          opacity: 0;
+        }
+      }
+    }
+
+    .info {
+      padding: 18px;
+
+      .title {
+        margin-bottom: 6px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+        line-height: 14px;
+      }
+
+      .text {
+        margin: 0 8px;
+        font-size: 12px;
+        font-weight: 200;
+        color: rgb(77, 85, 93);
+        line-height: 24px;
+      }
+    }
+
+    .rating {
+      padding-top: 18px;
+
+      .title {
+        margin-left: 18px;
+        font-size: 14px;
+        color: rgb(7, 17, 27);
+        line-height: 14px;
+      }
+
+      .rating-wrapper {
+        padding: 0 18px;
+
+        .rating-item {
+          position: relative;
+          padding: 16px 0;
+          border-1px(rgba(7, 17, 27, 0.1));
+
+          .user {
+            position: absolute;
+            right: 0;
+            top: 16px;
+            line-height: 12px;
+            display: flex;
+            align-items: center;
+
+            .name {
+              margin-right: 6px;
+              font-size: 10px;
+              line-height: 12px;
+              color: rgb(147, 153, 159);
+            }
+          }
+        }
       }
     }
   }
