@@ -44,16 +44,16 @@
           <ratingselect :ratings="food.ratings" :desc="ratingDesc" v-model="selectedRating"></ratingselect>
           <div class="rating-wrapper">
             <ul v-show="food.ratings && food.ratings.length">
-              <li v-for="(rating, index) in food.ratings" :key="index" class="rating-item border-1px">
+              <li v-show="isShow(rating.rateType, rating.text)" v-for="(rating, index) in food.ratings" :key="index" class="rating-item border-1px">
                 <div class="user">
                   <span class="name">{{rating.username}}</span>
                   <img class="avatar" width="12" height="12" :src="rating.avatar">
                 </div>
                 <div class="time">
-                  {{rating.rateTime}}
+                  {{rating.rateTime | formatDate}}
                 </div>
                 <p class="text">
-                  <span :class="{'icon-thumb_up': rating.rateType===0, 'icon-thumb_down': rating.rateType===1}"></span>
+                  <span class="thumb" :class="{'icon-thumb_up': rating.rateType===0, 'icon-thumb_down': rating.rateType===1}"></span>
                   {{rating.text}}
                 </p>
               </li>
@@ -71,6 +71,7 @@ import BScroll from "better-scroll";
 import cartcontrol from "components/cartcontrol/cartcontrol.vue";
 import split from "components/split/split.vue";
 import ratingselect from "components/ratingselect/ratingselect.vue";
+import { formatDate } from "common/js/date";
 
 // eslint-disable-next-line
 const POSITIVE = 0;
@@ -121,6 +122,22 @@ export default {
     },
     emitCartAdd(target) {
       this.$emit("cart-add", target);
+    },
+    isShow(type, text) {
+      if (this.selectedRating.onlyContent && !text) {
+        return false;
+      }
+      if (this.selectedRating.selectType === ALL) {
+        return true;
+      } else {
+        return type === this.selectedRating.selectType;
+      }
+    }
+  },
+  filters: {
+    formatDate(time) {
+      let date = new Date(time);
+      return formatDate(date, "yyyy-MM-dd hh:mm");
     }
   },
   components: {
@@ -292,6 +309,10 @@ export default {
           padding: 16px 0;
           border-1px(rgba(7, 17, 27, 0.1));
 
+          &:last-child {
+            border-none();
+          }
+
           .user {
             position: absolute;
             right: 0;
@@ -306,7 +327,42 @@ export default {
               line-height: 12px;
               color: rgb(147, 153, 159);
             }
+
+            .avatar {
+              border-radius: 50%;
+            }
           }
+
+          .time {
+            font-size: 10px;
+            line-height: 12px;
+            color: rgb(147, 153, 159);
+            margin-bottom: 6px;
+          }
+
+          .text {
+            font-size: 12px;
+            line-height: 16px;
+            color: rgb(7, 17, 27);
+
+            .thumb {
+              margin-right: 4px;
+
+              &.icon-thumb_up {
+                color: rgb(0, 160, 220);
+              }
+
+              &.icon-thumb_down {
+                color: rgb(147, 153, 159);
+              }
+            }
+          }
+        }
+
+        .no-rating {
+          padding: 16px 0;
+          font-size: 12px;
+          color: rgb(7, 17, 27);
         }
       }
     }

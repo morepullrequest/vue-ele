@@ -1,6 +1,6 @@
 <template>
     <div class="rating-select">
-        <div class="rating-type border-1px">
+        <div class="rating-type">
             <span class="block positive" :class="{'active': value.selectType==2}" @click="changeType(2)">
                 {{desc.all}}<span class="count">{{ratings.length}}</span>
             </span>
@@ -11,7 +11,7 @@
                 {{desc.negative}}<span class="count">{{negatives.length}}</span>
             </span>
         </div>
-        <div class="switch border-1px">
+        <div class="switch">
             <span class="icon-check_circle" :class="{'on':value.onlyContent}" @click="switchContent"></span>
             <span class="text">只看有内容的评价</span>
         </div>
