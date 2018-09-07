@@ -235,6 +235,7 @@ export default {
     }
 
     .bulletin-text {
+      vertical-align: top
       margin: 0 4px;
       font-size: 10px;
     }
