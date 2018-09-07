@@ -28,6 +28,10 @@
             </div>
           </li>
         </ul>
+        <div class="favorite">
+          <span class="icon-favorite" :class="{'active':favorite}" @click="toggleFavorite"></span>
+          <span class="text">{{favoriteText}}</span>
+        </div>
       </div>
       <split></split>
       <div class="bulletin">
@@ -80,8 +84,18 @@ export default {
   },
   data() {
     return {
-      classMap: ["decrease", "discount", "special", "invoice", "guarantee"]
+      classMap: ["decrease", "discount", "special", "invoice", "guarantee"],
+      favorite: false
     };
+  },
+  computed: {
+    favoriteText() {
+      if (this.favorite) {
+        return "已收藏";
+      } else {
+        return "收藏";
+      }
+    }
   },
   mounted() {
     this._initSellerScroll();
@@ -125,6 +139,9 @@ export default {
           }
         });
       }
+    },
+    toggleFavorite() {
+      this.favorite = !this.favorite;
     }
   },
   components: {
@@ -150,6 +167,7 @@ export default {
 
     .overview {
       padding: 18px;
+      position: relative;
 
       .title {
         font-size: 14px;
@@ -206,6 +224,33 @@ export default {
               font-weight: 200;
             }
           }
+        }
+      }
+
+      .favorite {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        text-align: center;
+
+        .icon-favorite {
+          display: block;
+          margin-bottom: 4px;
+          font-size: 24px;
+          line-height: 24px;
+          color: #d4d6d9;
+
+          &.active {
+            color: rgb(240, 20, 20);
+          }
+        }
+
+        .text {
+          display: block;
+          width: 30px;
+          font-size: 10px;
+          line-height: 10px;
+          color: rgb(77, 85, 93);
         }
       }
     }
