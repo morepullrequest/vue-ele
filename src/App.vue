@@ -15,9 +15,13 @@
       </div>
     </div>
 
+
     <div class="content">
-      <router-view :seller="seller"></router-view>
+      <keep-alive>
+        <router-view :seller="seller"></router-view>
+      </keep-alive>
     </div>
+
   </div>
 </template>
 
@@ -38,7 +42,8 @@ export default {
   },
   created() {
     this.$axios
-      .get("/api/seller")
+      .get("http://localhost:8123/api/seller")
+      // .get("/api/seller")
       .then(response => {
         var res = response.data;
         if (res.errno === ERR_OK) {
@@ -80,7 +85,7 @@ export default {
       flex: 1;
       text-align: center;
 
-      & > a {
+      &>a {
         display: block;
         font-size: 14px;
         color: rgb(77, 85, 93);

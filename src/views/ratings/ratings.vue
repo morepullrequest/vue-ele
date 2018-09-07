@@ -84,7 +84,8 @@ export default {
   },
   created() {
     this.$axios
-      .get("/api/ratings")
+      .get("http://localhost:8123/api/ratings")
+      // .get("/api/ratings")
       .then(response => {
         var res = response.data;
         if (res.errno === ERR_OK) {

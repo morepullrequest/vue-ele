@@ -99,18 +99,21 @@ export default {
   },
   mounted() {
     this.classMap = ["decrease", "discount", "special", "invoice", "guarantee"];
-    this.$axios.get("/api/goods").then(response => {
-      let res = response.data;
-      if (res.errno === ERROR_OK) {
-        this.goods = res.data;
-        console.log("get /api/goods");
-        console.log(this.goods);
-        this.$nextTick(() => {
-          this._initScroll();
-          this._calculateHeight();
-        });
-      }
-    });
+    this.$axios
+      .get("http://localhost:8123/api/goods")
+      // .get("/api/goods")
+      .then(response => {
+        let res = response.data;
+        if (res.errno === ERROR_OK) {
+          this.goods = res.data;
+          console.log("get /api/goods");
+          console.log(this.goods);
+          this.$nextTick(() => {
+            this._initScroll();
+            this._calculateHeight();
+          });
+        }
+      });
   },
   methods: {
     _initScroll() {
